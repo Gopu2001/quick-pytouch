@@ -1,0 +1,22 @@
+#!/bin/bash
+
+if [ -f $1 ]; then
+    echo "File $1 found already. Did you mean to create a new file?"
+    exit 1
+fi
+
+touch $1
+echo -e "#!$(which python)\n" >> $1  # shebang with python executable
+
+# set the authorship information
+if [ -x "$(command -v git)" ] && [ ! -z "$(git config --list | grep "user.name")" ]; then
+    echo -e "# Author: $(git config user.name)\n" >> $1
+else
+    echo -e "# Author: $USER\n" >> $1
+fi
+
+# create a starter for module docstring
+echo -e "\"\"\"\nDescription: ...\n\nUsage: ./$1 ...\n\"\"\"" >> $1
+
+# make the file executable
+chmod +x $1
